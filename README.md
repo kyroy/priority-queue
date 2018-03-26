@@ -1,8 +1,11 @@
 # priority-queue
 
+[![Documentation](https://godoc.org/github.com/Kyroy/priority-queue?status.svg)](http://godoc.org/github.com/Kyroy/priority-queue)
 [![Build Status](https://jenkins.kyroy.com/job/github.com-kyroy/job/priority-queue/job/master/badge/icon)](https://jenkins.kyroy.com/job/github.com-kyroy/job/priority-queue/job/master/)
 [![Jenkins tests](https://img.shields.io/jenkins/t/https/jenkins.kyroy.com/job/github.com-kyroy/job/priority-queue/job/master.svg)](https://jenkins.kyroy.com/job/github.com-kyroy/job/priority-queue/job/master/)
 [![Jenkins coverage](https://img.shields.io/jenkins/c/https/jenkins.kyroy.com/job/github.com-kyroy/job/priority-queue/job/master.svg)](https://jenkins.kyroy.com/job/github.com-kyroy/job/priority-queue/job/master/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/kyroy/priority-queue)](https://goreportcard.com/report/github.com/kyroy/priority-queue)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Kyroy/priority-queue/blob/master/LICENSE)
 
 A [priority queue](https://en.wikipedia.org/wiki/Priority_queue) implementation in golang where every element in the queue can be accessed by its index in constant time.
 This is achieved by using Golang's [sort](https://golang.org/pkg/sort/) package. 
