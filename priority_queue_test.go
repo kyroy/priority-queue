@@ -6,6 +6,8 @@ import (
 
 	"math/rand"
 
+	"math"
+
 	"github.com/kyroy/priority-queue"
 	"github.com/stretchr/testify/assert"
 )
@@ -123,6 +125,56 @@ func TestGet(t *testing.T) {
 				_, prio := queue.Get(i)
 				assert.True(t, lastPrio <= prio, "[%d] expect %f <= %f", i, prio, lastPrio)
 				lastPrio = prio
+			}
+		})
+	}
+}
+
+func TestMinPrioSize(t *testing.T) {
+	tests := []struct {
+		name  string
+		size  int
+		input []float64
+	}{
+		{name: "10", size: 5, input: generateRandomInput(10)},
+		{name: "100", size: 10, input: generateRandomInput(100)},
+		{name: "1000", size: 20, input: generateRandomInput(1000)},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			lastPrio := randMultiplier
+			queue := pq.NewPriorityQueue(pq.WithMinPrioSize(test.size))
+			for _, itm := range test.input {
+				queue.Insert(itm, itm)
+				_, smallestElem := queue.Get(0)
+				assert.True(t, smallestElem <= lastPrio, "expect %f <= %f", smallestElem, lastPrio)
+				lastPrio = math.Min(lastPrio, smallestElem)
+				assert.True(t, queue.Len() <= test.size)
+			}
+		})
+	}
+}
+
+func TestMaxPrioSize(t *testing.T) {
+	tests := []struct {
+		name  string
+		size  int
+		input []float64
+	}{
+		{name: "10", size: 5, input: generateRandomInput(10)},
+		{name: "100", size: 10, input: generateRandomInput(100)},
+		{name: "1000", size: 20, input: generateRandomInput(1000)},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			lastPrio := -randMultiplier
+			queue := pq.NewPriorityQueue(pq.WithMaxPrioSize(test.size))
+			for _, itm := range test.input {
+				queue.Insert(itm, itm)
+				_, largestElem := queue.Get(queue.Len() - 1)
+				assert.True(t, lastPrio <= largestElem, "expect %f <= %f", lastPrio, largestElem)
+				lastPrio = math.Max(lastPrio, largestElem)
+				assert.True(t, queue.Len() <= test.size)
 			}
 		})
 	}

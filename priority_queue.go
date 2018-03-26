@@ -6,15 +6,52 @@ import (
 
 // PriorityQueue ...
 type PriorityQueue struct {
-	items *items
+	items      *items
+	sizeOption Option
+}
+
+type optionEnum int
+
+const (
+	none optionEnum = iota
+	minPrioSize
+	maxPrioSize
+)
+
+// Option ...
+type Option struct {
+	option optionEnum
+	value  int
+}
+
+// WithMinPrioSize ...
+func WithMinPrioSize(size int) Option {
+	return Option{
+		option: minPrioSize,
+		value:  size,
+	}
+}
+
+///WithMaxPrioSize ...
+func WithMaxPrioSize(size int) Option {
+	return Option{
+		option: maxPrioSize,
+		value:  size,
+	}
 }
 
 // NewPriorityQueue ...
-func NewPriorityQueue() *PriorityQueue {
-	is := &items{}
-	return &PriorityQueue{
-		items: is,
+func NewPriorityQueue(options ...Option) *PriorityQueue {
+	pq := PriorityQueue{
+		items: &items{},
 	}
+	for _, o := range options {
+		switch o.option {
+		case none, minPrioSize, maxPrioSize:
+			pq.sizeOption = o
+		}
+	}
+	return &pq
 }
 
 // Len ...
@@ -26,6 +63,17 @@ func (p *PriorityQueue) Len() int {
 func (p *PriorityQueue) Insert(v interface{}, priority float64) {
 	*p.items = append(*p.items, &item{value: v, priority: priority})
 	sort.Sort(p.items)
+	switch p.sizeOption.option {
+	case minPrioSize:
+		if p.sizeOption.value < len(*p.items) {
+			*p.items = (*p.items)[:p.sizeOption.value]
+		}
+	case maxPrioSize:
+		diff := len(*p.items) - p.sizeOption.value
+		if diff > 0 {
+			*p.items = (*p.items)[diff:]
+		}
+	}
 }
 
 // PopLowest ...
