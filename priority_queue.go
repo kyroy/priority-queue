@@ -1,10 +1,11 @@
+// Package pq implements a priority queue data structure on top of golang's sort.Interface.
 package pq
 
 import (
 	"sort"
 )
 
-// PriorityQueue ...
+// PriorityQueue represents the queue
 type PriorityQueue struct {
 	items      *items
 	sizeOption Option
@@ -18,29 +19,13 @@ const (
 	maxPrioSize
 )
 
-// Option ...
+// Option represents the option
 type Option struct {
 	option optionEnum
 	value  int
 }
 
-// WithMinPrioSize ...
-func WithMinPrioSize(size int) Option {
-	return Option{
-		option: minPrioSize,
-		value:  size,
-	}
-}
-
-///WithMaxPrioSize ...
-func WithMaxPrioSize(size int) Option {
-	return Option{
-		option: maxPrioSize,
-		value:  size,
-	}
-}
-
-// NewPriorityQueue ...
+// NewPriorityQueue returns an initialized PriorityQueue with the given options
 func NewPriorityQueue(options ...Option) *PriorityQueue {
 	pq := PriorityQueue{
 		items: &items{},
@@ -54,12 +39,28 @@ func NewPriorityQueue(options ...Option) *PriorityQueue {
 	return &pq
 }
 
-// Len ...
+// WithMinPrioSize limits the size of the priority queue to 'size' by keeping the elements with the lowest priorities.
+func WithMinPrioSize(size int) Option {
+	return Option{
+		option: minPrioSize,
+		value:  size,
+	}
+}
+
+// WithMaxPrioSize limits the size of the priority queue to 'size' by keeping the elements with the highest priorities.
+func WithMaxPrioSize(size int) Option {
+	return Option{
+		option: maxPrioSize,
+		value:  size,
+	}
+}
+
+// Len returns the number of elements in the queue.
 func (p *PriorityQueue) Len() int {
 	return p.items.Len()
 }
 
-// Insert ...
+// Insert inserts a new element into the queue.
 func (p *PriorityQueue) Insert(v interface{}, priority float64) {
 	*p.items = append(*p.items, &item{value: v, priority: priority})
 	sort.Sort(p.items)
@@ -76,8 +77,8 @@ func (p *PriorityQueue) Insert(v interface{}, priority float64) {
 	}
 }
 
-// PopLowest ...
-// returns nil if empty
+// PopLowest removes the element with the lowest priority from the queue and returns it.
+// If the queue is empty, nil is returned.
 func (p *PriorityQueue) PopLowest() interface{} {
 	if len(*p.items) == 0 {
 		return nil
@@ -87,8 +88,8 @@ func (p *PriorityQueue) PopLowest() interface{} {
 	return x.value
 }
 
-// PopHighest ...
-// returns nil if empty
+// PopHighest removes the element with the highest priority from the queue and returns it.
+// If the queue is empty, nil is returned.
 func (p *PriorityQueue) PopHighest() interface{} {
 	l := len(*p.items) - 1
 	if l < 0 {
@@ -99,7 +100,9 @@ func (p *PriorityQueue) PopHighest() interface{} {
 	return x.value
 }
 
-// Get ...
+// Get returns the element with the i-th priority (from low to high).
+// So the element with the lowest priority has the index 0.
+// And the element with the highest priority has the index queue.Len()-1.
 func (p *PriorityQueue) Get(i int) (interface{}, float64) {
 	x := (*p.items)[i]
 	return x.value, x.priority
